@@ -65,16 +65,44 @@ public class Fraction {
         return new Fraction(num, denom);
     }
 
-    public Fraction add(Fraction frac){
+    public int add(Fraction frac){
     	
-    	String s = "vh";
-        int num = this.getNumerator() + frac.getNumerator();
-        int denom = this.getDenominator() + frac.getDenominator();
-        return new Fraction(num, denom);
+    	
+    	int denom1 = this.getDenominator();
+    	int denom2 = frac.getDenominator();
+    	
+    	return commonDemoninator(denom1,denom2);
+
+    }
+    
+    private int commonDemoninator(int denom1, int denom2)
+    {
+    	int commonDenom = -1;
+    	for(int i = 1; i < 50; i++)
+    	{
+    		for(int k = 1; k < 50; k++)
+    		{
+    			if((denom1 * i) == (denom2 * k))
+    			{
+    				commonDenom =  denom1 * i;
+    				break;
+    			}
+    		}
+    		if(commonDenom != -1){break;}
+    	}
+    	
+    	return commonDenom;
+    }
+    
+    private int recCommon(int demon1, int mult1, int demon2, int mult2)
+    {
+    	
     }
     
     
-    private int myGcd(int a, int b) {
+    
+    //change to private
+    public int myGcd(int a, int b) {
         while (b != 0) {
             int t = b;
             b = a % b;
