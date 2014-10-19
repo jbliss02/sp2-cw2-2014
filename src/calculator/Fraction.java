@@ -76,7 +76,7 @@ public class Fraction {
     }
     
     public Fraction subtract(Fraction frac)
-    {
+    {//subtracts the input fraction with the objects fraction
     	Fraction simpleInput = frac.simplify(); 
  
         int commonDenom = returnCommon(simpleInput.getDenominator(), 1, this.getDenominator(), 1);       
@@ -86,13 +86,23 @@ public class Fraction {
     }
     
     public Fraction divide(Fraction frac)
-    {
-    	//flip the numerator and denominator of the input so we can use that to multiply
-    	//Fraction newInput = new Fraction(frac.getDenominator(), frac.getNumerator()).simplify();
-    	
+    {//divides the input fraction with the objects fraction
         return new Fraction((this.getNumerator() * frac.getDenominator()), this.getDenominator() * frac.getNumerator()).simplify();
-
+    }
+    
+    public Fraction negate()
+    {//negates the objects fraction, if either the numerator or denominator are negative then change the sign so
+     //both are always positive
     	
+    	int newNom = this.getNumerator() < 0 ? this.getNumerator() * -1 : this.getNumerator();
+    	int newDenom = this.getDenominator() < 0 ? this.getDenominator() * -1 : this.getDenominator();
+    	return new Fraction(newNom, newDenom).simplify();
+    	
+    }
+    
+    public Fraction absValue()
+    {//absolute value is the +ve value of the fraction
+    	return negate();
     }
     
 
@@ -105,7 +115,7 @@ public class Fraction {
 		}
 		else
 		{
-			//check which denominator to raise by 1
+			//check which denominator to raise by 1 (the smallest product of the demoninator * its multiplier + 1)
 			if((denom1 * (mult1 + 1)) > (denom2 * (mult2 + 1)))
 			{
 				return returnCommon(denom1, mult1, denom2, mult2 + 1);

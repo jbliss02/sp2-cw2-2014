@@ -25,13 +25,30 @@ public class FractionTest {
 	}
 	
 	
+	
+	public void testNegate()
+	{
+		assertEquals("Wrong", new Fraction(1, 2), new Fraction(1,2).negate());
+		assertEquals("Wrong", new Fraction(1, 2), new Fraction(-1,2).negate());
+		assertEquals("Wrong", new Fraction(1, 2), new Fraction(1,-2).negate());
+		assertEquals("Wrong", new Fraction(1, 2), new Fraction(-1,-2).negate());
+	}
+	
+	@Test
+	public void absValue()
+	{
+		assertEquals("Wrong", new Fraction(1, 2), new Fraction(1,2).negate());
+		assertEquals("Wrong", new Fraction(1, 2), new Fraction(-1,2).negate());
+		assertEquals("Wrong", new Fraction(1, 2), new Fraction(1,-2).negate());
+		assertEquals("Wrong", new Fraction(1, 2), new Fraction(-1,-2).negate());
+	}
+	
+	
 	public void testSimplify()
 	{
 		//assertEquals("Wrong", new Fraction(1, 2), new Fraction(2,4).simplify());
 	}
 	
-	
-	@Test
 	public void testDivide()
 	{
 		assertEquals("Wrong", new Fraction(8, 3), new Fraction(2,3).divide(new Fraction(1, 4)));
