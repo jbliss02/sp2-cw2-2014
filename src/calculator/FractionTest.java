@@ -17,7 +17,7 @@ public class FractionTest {
 	public static void main(String[] args)
 	{
 		Fraction f = new Fraction(2,4);
-		System.out.println(f.simplify().toString());
+		//System.out.println(f.simplify().toString());
 
 		
 		
@@ -28,11 +28,20 @@ public class FractionTest {
 	
 	public void testSimplify()
 	{
-		assertEquals("Wrong", new Fraction(1, 2), new Fraction(2,4).simplify());
+		//assertEquals("Wrong", new Fraction(1, 2), new Fraction(2,4).simplify());
 	}
 	
 	
 	@Test
+	public void testSubtract()
+	{
+		assertEquals("Wrong", new Fraction(5, 8), new Fraction(6,8).subtract(new Fraction(1, 8)));
+		assertEquals("Wrong", new Fraction(7, 153), new Fraction(2,9).subtract(new Fraction(3, 17)));
+		assertEquals("Wrong", new Fraction(-7958, 11528), new Fraction(86,1441).subtract(new Fraction(6, 8)));		
+		assertEquals("Wrong", new Fraction(-3979, 5764), new Fraction(86,1441).subtract(new Fraction(6, 8)));	
+	}
+	
+
 	public void testAdd()
 	{
 		assertEquals("Wrong", new Fraction(61, 153), new Fraction(2,9).add(new Fraction(3, 17)));

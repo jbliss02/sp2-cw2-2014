@@ -67,26 +67,22 @@ public class Fraction {
 
     public Fraction add(Fraction frac){
     	
-//    	//do gcd of the inputed fraction first
-//        int num = frac.getNumerator();
-//        int denom = frac.getDenominator();
-//        int gcd = myGcd(num, denom);
-//        
-//        //set the integers of the new fraction
-//        int num1 = (num / gcd);
-//        int denom1 = (denom / gcd);
-
-    	Fraction simpleInput = frac.simplify();
+    	Fraction simpleInput = frac.simplify(); 
     	
         int commonDenom = returnCommon(simpleInput.getDenominator(), 1, this.getDenominator(), 1);
-        
-        //set the new numerator
-        //int newNom = (num1 * (commonDenom /denom1) + (this.getNumerator() * (commonDenom / this.getDenominator())));
         int newNom = (simpleInput.getNumerator() * (commonDenom /simpleInput.getDenominator()) + (this.getNumerator() * (commonDenom / this.getDenominator())));
         
+        return new Fraction(newNom, commonDenom);
+    }
+    
+    public Fraction subtract(Fraction frac)
+    {
+    	Fraction simpleInput = frac.simplify(); 
+ 
+        int commonDenom = returnCommon(simpleInput.getDenominator(), 1, this.getDenominator(), 1);       
+        int newNom = ((this.getNumerator() * (commonDenom / this.getDenominator())) - simpleInput.getNumerator() * (commonDenom /simpleInput.getDenominator()));
         
         return new Fraction(newNom, commonDenom);
-        
     }
     
 
@@ -114,7 +110,7 @@ public class Fraction {
     }//returnCommon ends
     
     //simplify a fraction
-    public Fraction simplify()
+    private Fraction simplify()
     {
 
         int num = this.getNumerator();
