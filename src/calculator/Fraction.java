@@ -20,8 +20,7 @@ public class Fraction {
     @Override
     public String toString() {
     	
-    	return  getDenominator() == 1 ? "" + getNumerator() : "" + getNumerator() + '/' + getDenominator();
-    	
+    	return  getDenominator() == 1 ? "" + getNumerator() : "" + getNumerator() + '/' + getDenominator();	
     }
 
     public int getNumerator() {
@@ -96,15 +95,19 @@ public class Fraction {
     {//negates the objects fraction, if either the numerator or denominator are negative then change the sign so
      //both are always positive
     	
-    	int newNom = this.getNumerator() < 0 ? this.getNumerator() * -1 : this.getNumerator();
-    	int newDenom = this.getDenominator() < 0 ? this.getDenominator() * -1 : this.getDenominator();
-    	return new Fraction(newNom, newDenom).simplify();
+//    	int newNom = this.getNumerator() < 0 ? this.getNumerator() * -1 : this.getNumerator();
+//    	int newDenom = this.getDenominator() < 0 ? this.getDenominator() * -1 : this.getDenominator();
+//    	return new Fraction(newNom, newDenom).simplify();
+    	
+    	return new Fraction(this.getNumerator(), this.getDenominator() * -1);
     	
     }
     
     public Fraction absValue()
     {//absolute value is the +ve value of the fraction
-    	return negate();
+    	int newNom = this.getNumerator() < 0 ? this.getNumerator() * -1 : this.getNumerator();
+    	int newDenom = this.getDenominator() < 0 ? this.getDenominator() * -1 : this.getDenominator();
+    	return new Fraction(newNom, newDenom).simplify();
     }
     
 
