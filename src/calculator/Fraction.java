@@ -65,44 +65,71 @@ public class Fraction {
         return new Fraction(num, denom);
     }
 
-    public int add(Fraction frac){
+    public Fraction add(Fraction frac){
     	
-    	
-    	int denom1 = this.getDenominator();
-    	int denom2 = frac.getDenominator();
-    	
-    	return commonDemoninator(denom1,denom2);
+//    	//do gcd of the inputed fraction first
+//        int num = frac.getNumerator();
+//        int denom = frac.getDenominator();
+//        int gcd = myGcd(num, denom);
+//        
+//        //set the integers of the new fraction
+//        int num1 = (num / gcd);
+//        int denom1 = (denom / gcd);
 
-    }
-    
-    private int commonDemoninator(int denom1, int denom2)
-    {
-    	int commonDenom = -1;
-    	for(int i = 1; i < 50; i++)
-    	{
-    		for(int k = 1; k < 50; k++)
-    		{
-    			if((denom1 * i) == (denom2 * k))
-    			{
-    				commonDenom =  denom1 * i;
-    				break;
-    			}
-    		}
-    		if(commonDenom != -1){break;}
-    	}
+    	Fraction simpleInput = frac.simplify();
     	
-    	return commonDenom;
+        int commonDenom = returnCommon(simpleInput.getDenominator(), 1, this.getDenominator(), 1);
+        
+        //set the new numerator
+        //int newNom = (num1 * (commonDenom /denom1) + (this.getNumerator() * (commonDenom / this.getDenominator())));
+        int newNom = (simpleInput.getNumerator() * (commonDenom /simpleInput.getDenominator()) + (this.getNumerator() * (commonDenom / this.getDenominator())));
+        
+        
+        return new Fraction(newNom, commonDenom);
+        
     }
     
-    private int recCommon(int demon1, int mult1, int demon2, int mult2)
+
+    private int returnCommon(int denom1, int mult1, int denom2, int mult2)
+    {//a recursive method to return the lowest common denominator 
+    
+		if((denom1 * mult1) == (denom2 * mult2))
+		{
+			return denom1 * mult1;
+		}
+		else
+		{
+			//check which denominator to raise by 1
+			if((denom1 * (mult1 + 1)) > (denom2 * (mult2 + 1)))
+			{
+				return returnCommon(denom1, mult1, denom2, mult2 + 1);
+			}
+			else
+			{
+				return returnCommon(denom1, mult1 + 1, denom2, mult2);	
+			}
+			
+		}
+
+    }//returnCommon ends
+    
+    //simplify a fraction
+    public Fraction simplify()
     {
-    	
+
+        int num = this.getNumerator();
+        int denom = this.getDenominator();
+        int gcd = myGcd(num, denom);
+        
+        //set the integers of the new fraction
+        int num1 = (num / gcd);
+        int denom1 = (denom / gcd);
+        
+        return new Fraction(num1, denom1);
     }
-    
-    
     
     //change to private
-    public int myGcd(int a, int b) {
+    private int myGcd(int a, int b) {
         while (b != 0) {
             int t = b;
             b = a % b;

@@ -16,14 +16,33 @@ public class FractionTest {
 	
 	public static void main(String[] args)
 	{
-		Fraction f = new Fraction(1,9);
-		System.out.println(f.add(new Fraction(1,17)));
+		Fraction f = new Fraction(2,4);
+		System.out.println(f.simplify().toString());
 
+		
+		
 
 		
 	}
 	
+	
+	public void testSimplify()
+	{
+		assertEquals("Wrong", new Fraction(1, 2), new Fraction(2,4).simplify());
+	}
+	
+	
 	@Test
+	public void testAdd()
+	{
+		assertEquals("Wrong", new Fraction(61, 153), new Fraction(2,9).add(new Fraction(3, 17)));
+		assertEquals("Wrong", new Fraction(27, 40), new Fraction(3,8).add(new Fraction(3, 10)));
+		assertEquals("Wrong", new Fraction(-9, 20), new Fraction(3,-4).add(new Fraction(3, 10)));
+		assertEquals("Wrong", new Fraction(387, 203), new Fraction(18,29).add(new Fraction(9, 7)));
+
+	}
+	
+
 	public void testcommonDemoninator()
 	{
 		assertEquals("Wrong", 153, new Fraction(2,9).add(new Fraction(3, 17)));
