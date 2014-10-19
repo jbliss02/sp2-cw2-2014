@@ -16,8 +16,7 @@ public class FractionTest {
 	
 	public static void main(String[] args)
 	{
-		Fraction f = new Fraction(2,4);
-		//System.out.println(f.simplify().toString());
+		new Fraction(2,3).divide(new Fraction(1, 4));
 
 		
 		
@@ -33,6 +32,15 @@ public class FractionTest {
 	
 	
 	@Test
+	public void testDivide()
+	{
+		assertEquals("Wrong", new Fraction(8, 3), new Fraction(2,3).divide(new Fraction(1, 4)));
+		assertEquals("Wrong", new Fraction(301, 13998), new Fraction(172,6999).divide(new Fraction(8, 7)));
+		assertEquals("Wrong", new Fraction(99, 8), new Fraction(3,12).divide(new Fraction(-2, -99)));
+		assertEquals("Wrong", new Fraction(16621, 2575329), new Fraction(4533,6553).divide(new Fraction(3537, 33)));
+		assertEquals("Wrong", new Fraction(-16621, 2575329), new Fraction(4533,6553).divide(new Fraction(3537, -33)));
+	}
+
 	public void testSubtract()
 	{
 		assertEquals("Wrong", new Fraction(5, 8), new Fraction(6,8).subtract(new Fraction(1, 8)));

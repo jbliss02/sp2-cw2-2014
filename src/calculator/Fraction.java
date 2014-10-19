@@ -85,6 +85,16 @@ public class Fraction {
         return new Fraction(newNom, commonDenom);
     }
     
+    public Fraction divide(Fraction frac)
+    {
+    	//flip the numerator and denominator of the input so we can use that to multiply
+    	//Fraction newInput = new Fraction(frac.getDenominator(), frac.getNumerator()).simplify();
+    	
+        return new Fraction((this.getNumerator() * frac.getDenominator()), this.getDenominator() * frac.getNumerator()).simplify();
+
+    	
+    }
+    
 
     private int returnCommon(int denom1, int mult1, int denom2, int mult2)
     {//a recursive method to return the lowest common denominator 
