@@ -20,7 +20,16 @@ public class Fraction {
     @Override
     public String toString() {
     	
-    	return  getDenominator() == 1 ? "" + getNumerator() : "" + getNumerator() + '/' + getDenominator();	
+    	if(getDenominator() == 1)
+    	{
+    		return ("" + getNumerator()).trim();
+    	}
+    	else
+    	{
+    		return ("" + getNumerator() + '/' + getDenominator()).trim();
+    	}
+    	
+    	//return  getDenominator() == 1 ? "" + getNumerator() : "" + getNumerator() + '/' + getDenominator();	
     }
 
     public int getNumerator() {
