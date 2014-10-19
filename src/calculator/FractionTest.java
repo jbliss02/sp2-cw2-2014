@@ -16,7 +16,7 @@ public class FractionTest {
 	
 	public static void main(String[] args)
 	{
-		new Fraction(2,3).divide(new Fraction(1, 4));
+		System.out.println(new Fraction(-8,7).toString());
 
 		
 		
@@ -24,6 +24,15 @@ public class FractionTest {
 		
 	}
 	
+	@Test
+	public void testToString()
+	{
+		assertEquals("Wrong", "1/2", new Fraction(1,2).toString());
+		assertEquals("Wrong", "666/253663", new Fraction(666,253663).toString());
+		assertEquals("Wrong", "8/-7", new Fraction(-8,7).toString());
+		assertEquals("Wrong", "2", new Fraction(2,1).toString());
+		assertEquals("Wrong", "2", new Fraction(4,2).toString());
+	}
 	
 	
 	public void testNegate()
@@ -34,7 +43,7 @@ public class FractionTest {
 		assertEquals("Wrong", new Fraction(1, 2), new Fraction(-1,-2).negate());
 	}
 	
-	@Test
+	
 	public void absValue()
 	{
 		assertEquals("Wrong", new Fraction(1, 2), new Fraction(1,2).negate());

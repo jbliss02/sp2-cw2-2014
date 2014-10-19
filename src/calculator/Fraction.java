@@ -19,7 +19,9 @@ public class Fraction {
 
     @Override
     public String toString() {
-        return "" + getNumerator() + '/' + getDenominator();
+    	
+    	return  getDenominator() == 1 ? "" + getNumerator() : "" + getNumerator() + '/' + getDenominator();
+    	
     }
 
     public int getNumerator() {
