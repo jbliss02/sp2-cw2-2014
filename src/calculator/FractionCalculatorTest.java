@@ -62,6 +62,21 @@ public class FractionCalculatorTest {
 		//a simple multiplication
 		assertEquals("Err test 11", new Fraction(3,10), new FractionCalculator().evaluate(new Fraction(1,2), "* 3/5"));
 		
+		//2 fractions in a row
+		assertEquals("Err test 12", new Fraction(0,1), new FractionCalculator().evaluate(new Fraction(1,2), "3/5"));
+		
+		//simple double addition
+		assertEquals("Err test 13", new Fraction(3,4), new FractionCalculator().evaluate(new Fraction(1,4), "+ 1/4 + 1/4"));
+		
+		//simple triple addition
+		assertEquals("Err test 14", new Fraction(4,4), new FractionCalculator().evaluate(new Fraction(1,4), "+ 1/4 + 1/4 + 1/4"));
+		
+		//simple quadruple addition
+		assertEquals("Err test 15", new Fraction(5,4), new FractionCalculator().evaluate(new Fraction(1,4), "+ 1/4 + 1/4 + 1/4 + 1/4"));
+		
+		//simple tripe addition & a subtract
+		assertEquals("Err test 15", new Fraction(3,4), new FractionCalculator().evaluate(new Fraction(1,4), "+ 1/4 + 1/4 - 1/4 + 1/4"));
+		
 	}
 	
 	
