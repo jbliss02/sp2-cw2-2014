@@ -34,7 +34,7 @@ public class FractionTest {
 		assertEquals("Wrong", "2", new Fraction(4,2).toString());
 	}
 	
-	@Test
+	
 	public void testNegate()
 	{
 		assertEquals("Wrong", new Fraction(1, -2), new Fraction(1,2).negate());
@@ -44,13 +44,14 @@ public class FractionTest {
 		assertEquals("Wrong", new Fraction(-7, 8), new Fraction(7,8).negate());
 	}
 	
-	
+	@Test
 	public void absValue()
 	{
-		assertEquals("Wrong", new Fraction(1, 2), new Fraction(1,2).negate());
-		assertEquals("Wrong", new Fraction(1, 2), new Fraction(-1,2).negate());
-		assertEquals("Wrong", new Fraction(1, 2), new Fraction(1,-2).negate());
-		assertEquals("Wrong", new Fraction(1, 2), new Fraction(-1,-2).negate());
+		//assertEquals("Wrong", new Fraction(1, 2), new Fraction(1,2).absValue());
+		//assertEquals("Wrong", new Fraction(1, 2), new Fraction(-1,2).absValue());
+		//assertEquals("Wrong", new Fraction(1, 2), new Fraction(1,-2).absValue());
+		//assertEquals("Wrong", new Fraction(1, 2), new Fraction(-1,-2).absValue());
+		assertEquals("Wrong", new Fraction(8, 9), new Fraction(-8,9).absValue());
 	}
 	
 	
