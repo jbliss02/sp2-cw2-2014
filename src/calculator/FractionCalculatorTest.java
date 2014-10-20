@@ -53,9 +53,14 @@ public class FractionCalculatorTest {
 		//add followed by a non fraction
 		assertEquals("Err test 8", new Fraction(0,1), new FractionCalculator().evaluate(new Fraction(2,4), "+ -"));
 		
-		//
-		
-		
+		//a simple subtract
+		assertEquals("Err test 9", new Fraction(5,8), new FractionCalculator().evaluate(new Fraction(6,8), "- 1/8"));
+
+		//a simple divide
+		assertEquals("Err test 10", new Fraction(8,3), new FractionCalculator().evaluate(new Fraction(2,3), "/ 1/4"));
+
+		//a simple multiplication
+		assertEquals("Err test 11", new Fraction(3,10), new FractionCalculator().evaluate(new Fraction(1,2), "* 3/5"));
 		
 	}
 	

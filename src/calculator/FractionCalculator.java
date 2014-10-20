@@ -64,7 +64,7 @@ public class FractionCalculator{
 			return currentFrac;
 		}
 		
-		//ready to calculate - a fraction is stored in currentFrac and the position of the first operator is stored
+		//ready to calculate - a fraction is stored in currentFrac and the position of the first operator is stored in startingPoint
 		for(int i = startingPoint; i < stCalc.length; i ++)
 		{
 			//check the last element is a fraction
@@ -98,17 +98,29 @@ public class FractionCalculator{
 	}//evaluate ends
 	
 	private void doCalculation(Operator op, Fraction f)
-	{
+	{//updates the current fraction by doing the operation with the provided fraction
 		
-		if(op.name == "+")
+		switch(op.name)
 		{
-			currentFrac = currentFrac.add((f));
-		}
-		
+			case("+"):
+				currentFrac = currentFrac.add(f);
+				break;
+			case("-"):
+				currentFrac = currentFrac.subtract(f);
+				break;
+			case("*"):
+				currentFrac = currentFrac.multiply(f);
+				break;
+			case("/"):
+				currentFrac = currentFrac.divide(f);
+				break;
+				
+		}//switch ends
+			
 	}
 	
 	private void doCalculation(Operator op)
-	{
+	{//updates the current fraction 
 		if (op.name == "abs")
 		{
 			currentFrac = currentFrac.absValue();
@@ -200,12 +212,14 @@ class Operators
 	public Operators(){populate();}
 	
 	private void populate()
-	{
-		Operator o = new Operator("+", false);
-		list.add(o);
+	{//populates the supported operators in the list
 		
-		o = new Operator("abs", true);
-		list.add(o);
+		Operator o = new Operator("+", false); list.add(o);
+		o = new Operator("-", false); list.add(o);
+		o = new Operator("*", false); list.add(o);
+		o = new Operator("/", false); list.add(o);
+		
+		o = new Operator("abs", true); list.add(o);
 	}
 	
 	public boolean isOperator(String input)
