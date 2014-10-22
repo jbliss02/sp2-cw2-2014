@@ -3,22 +3,15 @@
  */
 package calculator;
 import java.util.*;
-/**
- * @author J
- *
- */
+
 public class FractionCalculator{
 
-	/**
-	 * @param args
-	 */
-	private Fraction currentFrac;
+	private IFraction currentFrac;
 	private Operators operators;
 	
 	public static void main(String[] args)
 	{
 		
-		//System.out.println(isFraction("2/3")));
 	}
 	
 	public FractionCalculator()
@@ -29,50 +22,27 @@ public class FractionCalculator{
 		
 	private void setDefault(){currentFrac = new Fraction(0,1);}
 	
-	public Fraction evaluate(Fraction frac, String inputString)
+	public IFraction evaluate(IFraction frac, String inputString)
 	{
-
-		//test for just a fraction with no instruction
-		if(inputString == ""){ currentFrac = new Fraction(frac.getNumerator(), frac.getDenominator()); return currentFrac;}
 		
-		//split the input instruction string into an array
-		String[] stCalc = inputString.split(" ");
+		currentFrac = frac; //save the provided fraction
 		
-		//next instruction must be an operator if the fraction is not zero- check and error if not
-		if(!frac.toString().equals("0") && !operators.isOperator(stCalc[0]))
-		{
-			writeError("fraction must be followed by an operator");
-			return currentFrac;
-		}
+		inputString = inputString.trim(); //ignore trailling blanks
 		
-		//set the starting fraction and the point in the instruction array the first operator should appear
-		int startingPoint = 0;
+		if(inputString == ""){ return currentFrac;} //test for just a fraction with no instruction
+				
+		String[] stCalc = inputString.split(" "); //split the input instruction string into an array
 		
-		if(frac.toString().equals("0") && isFraction(stCalc[0]))
-		{
-			currentFrac = toFraction(stCalc[0]);
-			startingPoint = 1;
-		}
-		else if(operators.isOperator(stCalc[0]))
-		{
-			startingPoint = 0;
-			currentFrac = frac;
-		}
-		else
-		{
-			writeError("some sequence error");
-			return currentFrac;
-		}
-		
-		//ready to calculate - a fraction is stored in currentFrac and the position of the first operator is stored in startingPoint
-		for(int i = startingPoint; i < stCalc.length; i ++)
-		{
-			//check the last element is a fraction
+		//loop through items and calculate
+		for(int i = 0; i < stCalc.length; i ++)
+		{	
+			if(stCalc[i].equals(" ")){continue;} //ignore any blanks
 			
-			//extract the current calculation
-					
-			//exit if the current element is not an operator
-			if(!operators.isOperator(stCalc[i])){writeError("Some sequence error, expected an operator"); return currentFrac;}
+			//if next element is a fraction then store that number as it overwrites what has been stored, and continue to next iteration	
+			if(isFraction(stCalc[i])){currentFrac = toFraction(stCalc[i]); continue;}
+			
+			//exit if the element is not an operator (as it is also not a fraction)
+			if(!operators.isOperator(stCalc[i])){writeError("Unexpected character"); return currentFrac;}
 			
 			//extract the current operator
 			Operator op = operators.returnOperator(stCalc[i]);
@@ -82,17 +52,19 @@ public class FractionCalculator{
 			{
 				doCalculation(op);
 			}
-			else
+			else //operator requires another item
 			{
-				if(stCalc.length <= i + 1 || !isFraction(stCalc[i + 1])){writeError("Some sequence error, expected a fraction"); return currentFrac;}
+				if(stCalc.length <= i + 1) {return currentFrac;} //message ends with an operator so ignore and return the current fraction
+			
+				if(!isFraction(stCalc[i + 1])){writeError("Some sequence error, expected a fraction"); return currentFrac;} //not a fraction so exit
 				
 				doCalculation(op, toFraction(stCalc[i + 1]));
-				i = i + 1; //increase i as we have taken the next fraction for the calculation
+
+				i++; //increase i as we have taken the next element as the fraction for the calculation
 			}
 
-		}
+		}//i -loop over instruction
 		
-
 		return currentFrac;
 		
 	}//evaluate ends
@@ -117,30 +89,51 @@ public class FractionCalculator{
 				
 		}//switch ends
 			
-	}
+	}//doCalculation
+
 	
 	private void doCalculation(Operator op)
 	{//updates the current fraction 
-		if (op.name == "abs")
+		
+		switch(op.name)
 		{
-			currentFrac = currentFrac.absValue();
+			case("abs"):
+				currentFrac = currentFrac.absValue();
+				break;
+			case("a"):
+				currentFrac = currentFrac.absValue();
+				break;
+			case("A"):
+				currentFrac = currentFrac.absValue();
+				break;
+			case("neg"):
+			case("n"):
+			case("N"):
+				currentFrac = currentFrac.negate();
+				break;
+			case("clear"):
+			case("c"):
+			case("C"):
+				currentFrac = new Fraction(0,1);
+				break;
 		}
-	}
-	
-	
-	
-	
-	
+
+	}//doCalculation
+
 	public boolean isFraction(String input)
 	{//checks whether the string input is a fraction by splitting on the '/' character,
 	 //then checking whether each element is a number
 		
 		String[] split = input.split("/");
-		if(split.length != 2) {return false;}
 		
-		return isNumeric(split[0]) && isNumeric(split[1]) ? true : false;
+		if(split.length != 2) //not a fraction
+		{
+			return isNumeric(input) ? true : false;
+		}
+		
+		return isNumeric(split[0]) && isNumeric(split[1]) ? true : false; //if both elements are numeric its a fraction
 
-	}
+	}//isFraction
 	
 	private boolean isNumeric(String input)
 	{//checks whether the string input is a number by attempting to parse and checking for an error
@@ -168,8 +161,18 @@ public class FractionCalculator{
 		
 		int[] ret = new int[2];
 		
-		if(!isFraction(input)) {ret[0] = 0; ret[1] = 1; return ret;} //not a fraction, return zero
-		
+		if(!isFraction(input)) //not a fraction or a whole number
+		{
+				ret[0] = 0; ret[1] = 1; 
+				return ret;
+		}
+		else if(isNumeric(input)) //is a whole number
+		{
+			ret[0] = Integer.parseInt(input); ret[1] = 1; 
+			return ret;
+		}
+
+		//if here then is a bona fide fraction
 		String[] split = input.split("/");
 		
 		if(isNumeric(split[0]) && isNumeric(split[1]))
@@ -198,7 +201,8 @@ public class FractionCalculator{
 		else
 		{
 			int[] f = returnFractionElements(input);
-			return new Fraction(f[0], f[1]);
+						
+			return f.length == 2 ? new Fraction(f[0], f[1]) : new Fraction(0,1); //create fraction or send 0 if not a fraction
 		}
 		
 	}//toFraction ends
@@ -220,6 +224,16 @@ class Operators
 		o = new Operator("/", false); list.add(o);
 		
 		o = new Operator("abs", true); list.add(o);
+		o = new Operator("a", true); list.add(o);
+		o = new Operator("A", true); list.add(o);
+		
+		o = new Operator("neg", true); list.add(o);
+		o = new Operator("n", true); list.add(o);
+		o = new Operator("N", true); list.add(o);
+		
+		o = new Operator("clear", true); list.add(o);
+		o = new Operator("c", true); list.add(o);
+		o = new Operator("C", true); list.add(o);
 	}
 	
 	public boolean isOperator(String input)

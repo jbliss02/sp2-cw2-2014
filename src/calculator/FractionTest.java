@@ -44,7 +44,9 @@ public class FractionTest {
 		assertEquals("Wrong", new Fraction(-7, 8), new Fraction(7,8).negate());
 	}
 	
-	@Test
+
+	
+	
 	public void absValue()
 	{
 		//assertEquals("Wrong", new Fraction(1, 2), new Fraction(1,2).absValue());
