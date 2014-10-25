@@ -2,7 +2,9 @@ package calculator;
 
 /**
  * Created by keith for the second coursework assignment.
+ * extended by jbliss02, october 2014
  */
+
 public class Fraction implements IFraction {
     private int numerator;
     private int denominator;
@@ -29,45 +31,29 @@ public class Fraction implements IFraction {
     	{
     		return ("" + getNumerator() + '/' + getDenominator()).trim();
     	}
-    	
-    	//return  getDenominator() == 1 ? "" + getNumerator() : "" + getNumerator() + '/' + getDenominator();	
+    		
     }
 
-    /* (non-Javadoc)
-	 * @see calculator.IFraction#getNumerator()
-	 */
+
     @Override
 	public int getNumerator() {
         return numerator;
     }
 
-    /* (non-Javadoc)
-	 * @see calculator.IFraction#setNumerator(int)
-	 */
     @Override
 	public void setNumerator(int num) {
         numerator = num;
     }
 
-    /* (non-Javadoc)
-	 * @see calculator.IFraction#getDenominator()
-	 */
     @Override
 	public int getDenominator() {
         return denominator;
     }
 
-    /* (non-Javadoc)
-	 * @see calculator.IFraction#setDenominator(int)
-	 */
     @Override
 	public void setDenominator(int num) {
         denominator = num;
     }
-
-    /* (non-Javadoc)
-	 * @see calculator.IFraction#equals(java.lang.Object)
-	 */
 
 	@Override
     public boolean equals(Object o) {
@@ -82,10 +68,6 @@ public class Fraction implements IFraction {
         return true;
     }
 
-    /* (non-Javadoc)
-	 * @see calculator.IFraction#hashCode()
-	 */
-
 	@Override
     public int hashCode() {
         int result = numerator;
@@ -93,9 +75,6 @@ public class Fraction implements IFraction {
         return result;
     }
 
-    /* (non-Javadoc)
-	 * @see calculator.IFraction#multiply(calculator.IFraction)
-	 */
     @Override
 	public IFraction multiply(IFraction frac) {
 
@@ -103,59 +82,44 @@ public class Fraction implements IFraction {
         int denom = this.getDenominator() * frac.getDenominator();
         return new Fraction(num, denom);
     }
-
-    /* (non-Javadoc)
-	 * @see calculator.IFraction#add(calculator.Fraction)
-	 */
+    
     @Override
-	public IFraction add(Fraction frac){
-    	
+    public IFraction add(Fraction frac)
+    {
     	IFraction simpleInput = frac.simplify(); 
     	
-        int commonDenom = returnCommon(simpleInput.getDenominator(), 1, this.getDenominator(), 1);
-        int newNom = (simpleInput.getNumerator() * (commonDenom /simpleInput.getDenominator()) + (this.getNumerator() * (commonDenom / this.getDenominator())));
-        
-        return new Fraction(newNom, commonDenom);
-    }
-    
-    /* (non-Javadoc)
-	 * @see calculator.IFraction#subtract(calculator.Fraction)
-	 */
-    @Override
+    	int ad = this.getNumerator() * simpleInput.getDenominator();
+    	int bc = this.getDenominator() * simpleInput.getNumerator();
+    	int bd = this.getDenominator() * simpleInput.getDenominator();
+    	
+    	return new Fraction((ad + bc), bd).simplify();	
+    } 
+    	
+	@Override
 	public IFraction subtract(Fraction frac)
-    {//subtracts the input fraction with the objects fraction
-    	IFraction simpleInput = frac.simplify(); 
- 
-        int commonDenom = returnCommon(simpleInput.getDenominator(), 1, this.getDenominator(), 1);       
-        int newNom = ((this.getNumerator() * (commonDenom / this.getDenominator())) - simpleInput.getNumerator() * (commonDenom /simpleInput.getDenominator()));
-        
-        return new Fraction(newNom, commonDenom);
-    }
+	{
+		int ad = this.getNumerator() * frac.getDenominator();
+		int bc = this.getDenominator() * frac.getNumerator();
+		int bd = this.getDenominator() * frac.getDenominator();
+		
+		return new Fraction((ad - bc), bd);
+	}
     
-    /* (non-Javadoc)
-	 * @see calculator.IFraction#divide(calculator.IFraction)
-	 */
+
     @Override
 	public IFraction divide(IFraction frac)
     {//divides the input fraction with the objects fraction
         return new Fraction((this.getNumerator() * frac.getDenominator()), this.getDenominator() * frac.getNumerator()).simplify();
     }
-    
-    /* (non-Javadoc)
-	 * @see calculator.IFraction#negate()
-	 */
+
     @Override
 	public IFraction negate()
     {//negates the objects fraction, if either the numerator or denominator are negative then change the sign so
      //both are always positive
 
-    	return new Fraction(this.getNumerator(), this.getDenominator() * -1);
-    	
+    	return new Fraction(this.getNumerator(), this.getDenominator() * -1);    	
     }
-    
-    /* (non-Javadoc)
-	 * @see calculator.IFraction#absValue()
-	 */
+
     @Override
 	public IFraction absValue()
     {//absolute value is the +ve value of the fraction
@@ -165,28 +129,28 @@ public class Fraction implements IFraction {
     }
     
 
-    private int returnCommon(int denom1, int mult1, int denom2, int mult2)
-    {//a recursive method to return the lowest common denominator 
-    
-		if((denom1 * mult1) == (denom2 * mult2))
-		{
-			return denom1 * mult1;
-		}
-		else
-		{
-			//check which denominator to raise by 1 (the smallest product of the demoninator * its multiplier + 1)
-			if((denom1 * (mult1 + 1)) > (denom2 * (mult2 + 1)))
-			{
-				return returnCommon(denom1, mult1, denom2, mult2 + 1);
-			}
-			else
-			{
-				return returnCommon(denom1, mult1 + 1, denom2, mult2);	
-			}
-			
-		}
-
-    }//returnCommon ends
+//    private int returnCommon(int denom1, int mult1, int denom2, int mult2)
+//    {//a recursive method to return the lowest common denominator 
+//    
+//		if((denom1 * mult1) == (denom2 * mult2))
+//		{
+//			return denom1 * mult1;
+//		}
+//		else
+//		{
+//			//check which denominator to raise by 1 (the smallest product of the demoninator * its multiplier + 1)
+//			if((denom1 * (mult1 + 1)) > (denom2 * (mult2 + 1)))
+//			{
+//				return returnCommon(denom1, mult1, denom2, mult2 + 1);
+//			}
+//			else
+//			{
+//				return returnCommon(denom1, mult1 + 1, denom2, mult2);	
+//			}
+//			
+//		}
+//
+//    }//returnCommon ends
     
     //simplify a fraction
     private IFraction simplify()

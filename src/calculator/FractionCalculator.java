@@ -1,8 +1,14 @@
 /**
+ * jbliss02 
+ * October 2014
+ * Fraction Calculator - takes a fraction and a string calculation, makes the calculations
+ * as outlined in the string and returns final fraction, throwing exceptions for anything unexpected
  * 
+ * meets the requirements outlined here http://moodle.bbk.ac.uk/pluginfile.php/349944/mod_resource/content/1/cw2.pdf
  */
 package calculator;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public class FractionCalculator{
 
@@ -20,11 +26,13 @@ public class FractionCalculator{
 		operators = new Operators();
 	}
 		
-	public void setDefault(){currentFrac = new Fraction(0,1);}
+	public void setDefault(){currentFrac = new Fraction(0,1);} //set the saved fraction to zero
 	
 	public IFraction evaluate(IFraction frac, String inputString) throws CalculatorError
 	{
 		currentFrac = frac; //save the provided fraction
+		
+		Operator rememberedOp = null; //incase an operation needs to be remembered
 		
 		inputString = inputString.trim(); //ignore trailing blanks
 		
@@ -50,7 +58,7 @@ public class FractionCalculator{
 			Operator op = operators.returnOperator(stCalc[i]);
 			if(op.isQuit()){setDefault(); throw new CalculatorError("Quit string found");} //quit check
 			
-			//define type of operation and call the calculation method,
+			//define type of operation and call the calculation method
 			if(op.worksAlone)
 			{
 				doCalculation(op);
@@ -59,13 +67,16 @@ public class FractionCalculator{
 			{
 				if(stCalc.length <= i + 1) {return currentFrac;} //string ends with an operator so ignore and return the current fraction
 		
-				if(!isFraction(stCalc[i + 1])){ //if not a fraction then error
+				if(!isFraction(stCalc[i + 1]) && !operators.isOperator(stCalc[i + 1])) //not a fraction nor an operator
+				{
 					setDefault();
 					throw new CalculatorError("Some sequence error, expected a fraction");
 				} 
+
+				
+				
 				
 				doCalculation(op, toFraction(stCalc[i + 1])); //do the calculation with the next item, which is a fraction
-
 				i++; //increase i as we have taken the next element as the fraction for the calculation
 			}
 
@@ -114,7 +125,7 @@ public class FractionCalculator{
 			case("c"):
 				currentFrac = new Fraction(0,1);
 				break;
-		}
+		}//switch ends
 
 	}//doCalculation
 
@@ -163,7 +174,7 @@ public class FractionCalculator{
 			return ret;
 		}
 
-		//if here then is a bona fide fraction
+		//if here then is a fraction
 		String[] split = input.split("/");
 		
 		if(isNumeric(split[0]) && isNumeric(split[1]))
@@ -197,7 +208,7 @@ public class FractionCalculator{
 		
 	}//toFraction ends
 	
-}
+}//FractionCalculator Class ends
 
 
 //Operators class holds the supported operators and associated logic
@@ -245,7 +256,7 @@ class Operators
 	}//isOperator
 	
 	public Operator returnOperator(String operatorName)
-	{//returns the Operator that matches the input name
+	{//returns the Operator that matches the input string name
 		
 		for(int i = 0; i < list.size(); i++)
 		{
