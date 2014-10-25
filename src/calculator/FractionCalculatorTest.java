@@ -19,14 +19,11 @@ public class FractionCalculatorTest {
 	}
 
 	@Test
-	public void basicEval()
-	{
+	public void basicEval() throws CalculatorError
+	{ 
 		//test starting with fraction
 		assertEquals("Basic test 1", new Fraction(1,2), new FractionCalculator().evaluate(new Fraction(1,2), ""));
 		
-		//operator not supplied after fraction (should console error too)
-		assertEquals("Basic test 2", new Fraction(0,1), new FractionCalculator().evaluate(new Fraction(1,2), "not"));
-
 		//zero supplied, then a fraction in the instruction
 		assertEquals("Basic test 3", new Fraction(1,3), new FractionCalculator().evaluate(new Fraction(0,1), "1/3"));
 		
@@ -41,9 +38,6 @@ public class FractionCalculatorTest {
 		
 		//another abs
 		assertEquals("Basic test 7", new Fraction(8, 9), new FractionCalculator().evaluate(new Fraction(-8,9), "abs"));
-		
-		//add followed by a non fraction
-		assertEquals("Basic test 8", new Fraction(0,1), new FractionCalculator().evaluate(new Fraction(2,4), "+ -"));
 		
 		//a simple subtract
 		assertEquals("Basic test 9", new Fraction(5,8), new FractionCalculator().evaluate(new Fraction(6,8), "- 1/8"));
@@ -70,8 +64,8 @@ public class FractionCalculatorTest {
 		assertEquals("Basic test 15", new Fraction(3,4), new FractionCalculator().evaluate(new Fraction(1,4), "+ 1/4 + 1/4 - 1/4 + 1/4"));
 	}
 	
-	@Test
-	public void mixedEval()
+	@Test 
+	public void mixedEval() throws CalculatorError
 	{
 		assertEquals("Mixed test 1", new Fraction(7,10), new FractionCalculator().evaluate(new Fraction(1,2), "+ 1/5 A"));
 		assertEquals("Mixed test 2", new Fraction(7,10), new FractionCalculator().evaluate(new Fraction(1,2), "+ 1/5 a"));
@@ -95,17 +89,15 @@ public class FractionCalculatorTest {
 	} 
 
 	@Test
-	public void wholeNumberEval()
+	public void wholeNumberEval() throws CalculatorError
 	{
 		assertEquals("wholeNumber test 1", new Fraction(8,7), new FractionCalculator().evaluate(new Fraction(1,7), "+ 1"));
 		assertEquals("wholeNumber test 2", new Fraction(1,7), new FractionCalculator().evaluate(new Fraction(8,7), "- 1"));
 		assertEquals("wholeNumber test 3", new Fraction(1,7), new FractionCalculator().evaluate(new Fraction(1,7), "* 1"));
-		
-
 	}
 	
 	@Test
-	public void testBlanks()
+	public void testBlanks() throws CalculatorError
 	{
 		//blank at beginning
 		assertEquals("blanks test 1", new Fraction(3,4), new FractionCalculator().evaluate(new Fraction(1,4), " + 1/4 + 1/4"));
@@ -114,10 +106,11 @@ public class FractionCalculatorTest {
 		//blank at beginning and end
 		assertEquals("blanks test 3", new Fraction(3,4), new FractionCalculator().evaluate(new Fraction(1,4), " + 1/4 + 1/4 "));
 
+		
 	}
 	
 	@Test
-	public void testClear()
+	public void testClear() throws CalculatorError
 	{
 		assertEquals("clear test 1", new Fraction(3,4), new FractionCalculator().evaluate(new Fraction(66,7), "+ 1/2 c 3/4"));
 		assertEquals("clear test 2", new Fraction(3,4), new FractionCalculator().evaluate(new Fraction(0,1), "+ 1/2 c 3/4"));
@@ -127,7 +120,93 @@ public class FractionCalculatorTest {
 	}
 	
 	@Test
-	public void exampleTest()
+	public void testError() //throws UnexpectedCharacter
+	{
+		//operator not supplied after fraction
+		try
+		{
+			assertEquals("Error test 2", new Fraction(0,1), new FractionCalculator().evaluate(new Fraction(1,2), "not"));
+		}
+		catch(CalculatorError ex)
+		{
+			System.out.println(ex.getMessage());
+			assertTrue(true);
+		}
+	}
+	
+	@Test
+	public void TestSequenceError()
+	{
+		//two operators in a row
+		try
+		{
+			//add followed by a non fraction
+			assertEquals("Basic test 8", new Fraction(0,1), new FractionCalculator().evaluate(new Fraction(2,4), "+ -"));
+		}
+		catch(CalculatorError ex)
+		{
+			System.out.println(ex.getMessage());
+			assertTrue(true);
+		}
+	}
+	
+	@Test
+	public void testQuit() 
+	{
+		try
+		{
+			assertEquals("Ex error 1", new Fraction(-1,4) , new FractionCalculator().evaluate(new Fraction(1,2), "- 3/4 q"));
+		}
+		catch(CalculatorError ex)
+		{
+			System.out.println(ex.getMessage());
+			assertTrue(true);
+		}
+		
+		try
+		{
+			assertEquals("Ex error 2", new Fraction(-1,4) , new FractionCalculator().evaluate(new Fraction(1,2), "- 3/4 quit"));
+		}
+		catch(CalculatorError ex)
+		{
+			System.out.println(ex.getMessage());
+			assertTrue(true);
+		}
+		
+		try
+		{
+			assertEquals("Ex error 3", new Fraction(-1,4) , new FractionCalculator().evaluate(new Fraction(1,2), "- 3/4 Q"));
+		}
+		catch(CalculatorError ex)
+		{
+			System.out.println(ex.getMessage());
+			assertTrue(true);
+		}
+		
+		try
+		{
+			assertEquals("Ex error 4", new Fraction(-1,4) , new FractionCalculator().evaluate(new Fraction(1,2), "- 3/4 Q + 6/10 - 7"));
+		}
+		catch(CalculatorError ex)
+		{
+			System.out.println(ex.getMessage());
+			assertTrue(true);
+		}
+		
+		try
+		{
+			assertEquals("Ex error 5", new Fraction(-1,4) , new FractionCalculator().evaluate(new Fraction(1,2), "q - 3/4 Q + 6/10 - 7"));
+		}
+		catch(CalculatorError ex)
+		{
+			System.out.println(ex.getMessage());
+			assertTrue(true);
+		}
+
+	}
+	
+	@Test
+	public void exampleTest() throws CalculatorError
 	{//works through the example in the coursework specification
 		
 		String ex = "1/2 - 3/4 * abs 8 7/8 neg";
@@ -148,6 +227,8 @@ public class FractionCalculatorTest {
 		
 		assertEquals("Ex error 4", new Fraction(7,8), new FractionCalculator().evaluate(new Fraction(1,2), "- 3/4 abs 8 7/8"));
 	}
+	
+	
 	
 	public void testFraction()
 	{
