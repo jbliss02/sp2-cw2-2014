@@ -9,7 +9,10 @@ package calculator;
  * character is found
  */
 public class CalculatorError extends Exception {
-	public CalculatorError(String st){
+	public String errorCode;
+
+	public CalculatorError(String st, String errCode){
 			super("Error: " + st);
+			this.errorCode = errCode;
 	}
 }

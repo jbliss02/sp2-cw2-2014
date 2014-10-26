@@ -9,17 +9,46 @@
 package calculator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class FractionCalculator implements IFractionCalculator{
 
 	private IFraction currentFrac;
 	private Operators operators;
 	
-	@Override
-	public void main(String[] args)
+	public static void main(String[] args)
 	{
+		System.out.println("Hello, this wonderful calculator was created by James Bliss jbliss02. Enter your calculation");
+		Scanner sc = new Scanner(System.in);
+		FractionCalculator fracCalc = new FractionCalculator();
 		
-	}
+		while(true)
+		{
+			String stIn = sc.nextLine();
+			
+			try
+			{
+				fracCalc.evaluate(new Fraction(0,1), stIn);
+			}
+			catch(CalculatorError ex)
+			{
+				if(ex.errorCode.equals("QUIT"))
+				{
+					System.out.println("Goodbye");
+					sc.close();
+					return;
+				}
+				else
+				{
+					System.out.println(ex.getMessage());
+				}
+			}//try catch ends
+			
+			System.out.println(fracCalc.currentFrac);
+			
+		}//forever loop
+		
+	}//main()
 	
 	public FractionCalculator()
 	{
@@ -34,7 +63,7 @@ public class FractionCalculator implements IFractionCalculator{
 	{
 		currentFrac = frac; //save the provided fraction
 		
-		Operator rememberedOp = null; //incase an operation needs to be remembered
+		Operator rememberedOp = null; //in case an operation needs to be remembered
 		
 		inputString = inputString.trim(); //ignore trailing blanks
 		
@@ -63,16 +92,16 @@ public class FractionCalculator implements IFractionCalculator{
 			//throw error if the element is not an operator (as it is also not a fraction)
 			if(!operators.isOperator(stCalc[i])){
 				setDefault();
-				throw new CalculatorError("Unsupprted character");
+				throw new CalculatorError("Unsupprted character", "ERR");
 			}
 			
 			//extract the current operator
 			Operator op = operators.returnOperator(stCalc[i]);
-			if(op.isQuit()){setDefault(); throw new CalculatorError("Quit string found");} //quit check
+			if(op.isQuit()){setDefault(); throw new CalculatorError("Quit string found", "QUIT");} //quit check
 			
 			//if operator and saved operator then error
 			if(rememberedOp != null && !op.worksAlone){
-				setDefault(); throw new CalculatorError("Some sequence error, two consecutive non-work alone operators found");
+				setDefault(); throw new CalculatorError("Some sequence error, two consecutive non-work alone operators found", "ERR");
 			}
 			
 			//define type of operation and call the calculation method
@@ -87,7 +116,7 @@ public class FractionCalculator implements IFractionCalculator{
 				if(!isFraction(stCalc[i + 1]) && !operators.isOperator(stCalc[i + 1])) //not a fraction nor an operator
 				{
 					setDefault();
-					throw new CalculatorError("Some sequence error, expected a fraction or operator");
+					throw new CalculatorError("Some sequence error, expected a fraction or operator", "ERR");
 				} 
 				else if(!isFraction(stCalc[i + 1]) && !op.worksAlone) //not a fraction but is a work alone operator
 				{
