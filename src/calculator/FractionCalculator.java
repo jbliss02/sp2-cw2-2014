@@ -10,12 +10,13 @@ package calculator;
 import java.util.List;
 import java.util.ArrayList;
 
-public class FractionCalculator{
+public class FractionCalculator implements IFractionCalculator{
 
 	private IFraction currentFrac;
 	private Operators operators;
 	
-	public static void main(String[] args)
+	@Override
+	public void main(String[] args)
 	{
 		
 	}
@@ -26,8 +27,9 @@ public class FractionCalculator{
 		operators = new Operators();
 	}
 		
-	public void setDefault(){currentFrac = new Fraction(0,1);} //set the saved fraction to zero
+	private void setDefault(){currentFrac = new Fraction(0,1);} //set the saved fraction to zero
 	
+	@Override
 	public IFraction evaluate(IFraction frac, String inputString) throws CalculatorError
 	{
 		currentFrac = frac; //save the provided fraction
@@ -45,9 +47,19 @@ public class FractionCalculator{
 		{	
 			if(stCalc[i].equals(" ")){continue;} //skip over any blanks
 			
-			//if next element is a fraction then store that number as it overwrites what has been stored, and continue to next iteration	
-			if(isFraction(stCalc[i])){currentFrac = toFraction(stCalc[i]); continue;}
-			
+			//if next element is a fraction then checked for a saved operator, if saved do calculation
+			//if not saved store that number as the current fraction, and continue to next iteration in both cases	
+			if(isFraction(stCalc[i]) && rememberedOp == null){
+				currentFrac = toFraction(stCalc[i]); 
+				continue;
+			}
+			else if(isFraction(stCalc[i]) && rememberedOp != null)
+			{
+				doCalculation(rememberedOp, toFraction(stCalc[i]));
+				rememberedOp = null;
+				continue;
+			}
+						
 			//throw error if the element is not an operator (as it is also not a fraction)
 			if(!operators.isOperator(stCalc[i])){
 				setDefault();
@@ -57,6 +69,11 @@ public class FractionCalculator{
 			//extract the current operator
 			Operator op = operators.returnOperator(stCalc[i]);
 			if(op.isQuit()){setDefault(); throw new CalculatorError("Quit string found");} //quit check
+			
+			//if operator and saved operator then error
+			if(rememberedOp != null && !op.worksAlone){
+				setDefault(); throw new CalculatorError("Some sequence error, two consecutive non-work alone operators found");
+			}
 			
 			//define type of operation and call the calculation method
 			if(op.worksAlone)
@@ -70,15 +87,19 @@ public class FractionCalculator{
 				if(!isFraction(stCalc[i + 1]) && !operators.isOperator(stCalc[i + 1])) //not a fraction nor an operator
 				{
 					setDefault();
-					throw new CalculatorError("Some sequence error, expected a fraction");
+					throw new CalculatorError("Some sequence error, expected a fraction or operator");
 				} 
+				else if(!isFraction(stCalc[i + 1]) && !op.worksAlone) //not a fraction but is a work alone operator
+				{
+					rememberedOp = op; //save the operator for later use as it cannot be used immediately
+				}
+				else
+				{
+					doCalculation(op, toFraction(stCalc[i + 1])); //do the calculation with the next item, which is a fraction
+					i++; //increase i as we have taken the next element as the fraction for the calculation
+				}
 
-				
-				
-				
-				doCalculation(op, toFraction(stCalc[i + 1])); //do the calculation with the next item, which is a fraction
-				i++; //increase i as we have taken the next element as the fraction for the calculation
-			}
+			}//type of operator found
 
 		}//i -loop over instruction
 		
@@ -129,7 +150,7 @@ public class FractionCalculator{
 
 	}//doCalculation
 
-	public boolean isFraction(String input)
+	private boolean isFraction(String input)
 	{//checks whether the string input is a fraction by splitting on the '/' character,
 	 //then checking whether each element is a number
 		
@@ -291,8 +312,8 @@ class Operator
 		{
 			return false;
 		}
-	}
+	}//isQuit()
 	
-}
+}//Operator class ends
 
 
