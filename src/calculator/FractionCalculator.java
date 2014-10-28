@@ -17,21 +17,21 @@ public class FractionCalculator implements IFractionCalculator {
 	private Operators operators;
 	
 	public static void main(String[] args) {
-		System.out.println("Hello, this wonderful calculator was created by James Bliss jbliss02. Enter your calculation");
 		
-		FractionCalculator fracCalc = new FractionCalculator();
-		fracCalc.runCalculator();
-
-		System.out.println("Goodbye!");
+		System.out.println("Hello, this wonderful calculator was created by James Bliss jbliss02. Enter your calculation");
+		new FractionCalculator().runCalculator(); //run the calculator
+		System.out.println("Goodbye!"); //user has exited
 		
 	}//main()
 	
-	//The method that accepts user inputs and calls the evaluate method, loops until the user exits
+	//runCalculator() accepts user inputs and calls the evaluate method, loops until the user exits
 	public void runCalculator() {
+		
 		Scanner sc = new Scanner(System.in);
 		setDefault(); //set the stored fraction to 0
 		
 		while(true) {
+			
 			String stIn = sc.nextLine(); //take the next input
 			
 			try {
