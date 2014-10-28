@@ -11,45 +11,51 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class FractionCalculator implements IFractionCalculator{
+public class FractionCalculator implements IFractionCalculator {
 
 	private IFraction currentFrac;
 	private Operators operators;
 	
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		System.out.println("Hello, this wonderful calculator was created by James Bliss jbliss02. Enter your calculation");
-		Scanner sc = new Scanner(System.in);
-		FractionCalculator fracCalc = new FractionCalculator();
 		
-		while(true)
-		{
-			String stIn = sc.nextLine();
-			
-			try
-			{
-				fracCalc.evaluate(new Fraction(0,1), stIn);
-			}
-			catch(CalculatorError ex)
-			{
-				if(ex.errorCode.equals("QUIT"))
-				{
-					System.out.println("Goodbye");
-					sc.close();
-					return;
-				}
-				else
-				{
-					System.out.println(ex.getMessage());
-				}
-			}//try catch ends
-			
-			System.out.println(fracCalc.currentFrac);
-			
-		}//forever loop
+		FractionCalculator fracCalc = new FractionCalculator();
+		fracCalc.runCalculator();
+
+		System.out.println("Goodbye!");
 		
 	}//main()
 	
+	//The method that accepts user inputs and calls the evaluate method, loops until the user exits
+	public void runCalculator() {
+		Scanner sc = new Scanner(System.in);
+		setDefault(); //set the stored fraction to 0
+		
+		while(true) {
+			String stIn = sc.nextLine(); //take the next input
+			
+			try {
+				currentFrac = evaluate(currentFrac, stIn); //do calculation
+			}
+			catch(CalculatorError ex) {
+				
+				if(ex.errorCode.equals("QUIT")) {
+					sc.close();
+					return; //end the program
+				}
+				else {
+					setDefault(); //set saved fraction to 0
+					System.out.println(ex.getMessage()); 
+				}
+				
+			}//try catch ends
+			
+			System.out.println(currentFrac); //print the current fraction then re-do the loop
+			
+		}//forever loop
+	}
+	
+	//constructor, sets the current fraction to zero, and loads the Operators class
 	public FractionCalculator()
 	{
 		setDefault();
@@ -58,10 +64,12 @@ public class FractionCalculator implements IFractionCalculator{
 		
 	private void setDefault(){currentFrac = new Fraction(0,1);} //set the saved fraction to zero
 	
+	//Evaluate - The main method that evaluates the string. For the main program the IFraction parameter is not required as this
+	//this managed through a private class variable, this stays in to prove the tests work!
 	@Override
 	public IFraction evaluate(IFraction frac, String inputString) throws CalculatorError
 	{
-		currentFrac = frac; //save the provided fraction
+		currentFrac = frac; //save the provided fraction (only required for the tests)
 		
 		Operator rememberedOp = null; //in case an operation needs to be remembered
 		
@@ -78,52 +86,47 @@ public class FractionCalculator implements IFractionCalculator{
 			
 			//if next element is a fraction then checked for a saved operator, if saved do calculation
 			//if not saved store that number as the current fraction, and continue to next iteration in both cases	
-			if(isFraction(stCalc[i]) && rememberedOp == null){
+			if(isFraction(stCalc[i]) && rememberedOp == null) {
 				currentFrac = toFraction(stCalc[i]); 
 				continue;
 			}
-			else if(isFraction(stCalc[i]) && rememberedOp != null)
-			{
+			else if(isFraction(stCalc[i]) && rememberedOp != null) {
 				doCalculation(rememberedOp, toFraction(stCalc[i]));
 				rememberedOp = null;
 				continue;
 			}
 						
 			//throw error if the element is not an operator (as it is also not a fraction)
-			if(!operators.isOperator(stCalc[i])){
-				setDefault();
+			if(!operators.isOperator(stCalc[i])) {
 				throw new CalculatorError("Unsupprted character", "ERR");
 			}
 			
-			//extract the current operator
+			//extract the current operator, check for sentinel
 			Operator op = operators.returnOperator(stCalc[i]);
-			if(op.isQuit()){setDefault(); throw new CalculatorError("Quit string found", "QUIT");} //quit check
+			if(op.isQuit()) {
+				throw new CalculatorError("Quit string found", "QUIT");
+			} 
 			
 			//if operator and saved operator then error
-			if(rememberedOp != null && !op.worksAlone){
-				setDefault(); throw new CalculatorError("Some sequence error, two consecutive non-work alone operators found", "ERR");
+			if(rememberedOp != null && !op.worksAlone) {
+				throw new CalculatorError("Some sequence error, two consecutive non-work alone operators found", "ERR");
 			}
 			
 			//define type of operation and call the calculation method
-			if(op.worksAlone)
-			{
+			if(op.worksAlone) {
 				doCalculation(op);
 			}
 			else //operator requires another item
 			{
 				if(stCalc.length <= i + 1) {return currentFrac;} //string ends with an operator so ignore and return the current fraction
 		
-				if(!isFraction(stCalc[i + 1]) && !operators.isOperator(stCalc[i + 1])) //not a fraction nor an operator
-				{
-					setDefault();
+				if(!isFraction(stCalc[i + 1]) && !operators.isOperator(stCalc[i + 1])) { //not a fraction nor an operator
 					throw new CalculatorError("Some sequence error, expected a fraction or operator", "ERR");
 				} 
-				else if(!isFraction(stCalc[i + 1]) && !op.worksAlone) //not a fraction but is a work alone operator
-				{
+				else if(!isFraction(stCalc[i + 1]) && !op.worksAlone) { //not a fraction but is a work alone operator				
 					rememberedOp = op; //save the operator for later use as it cannot be used immediately
 				}
-				else
-				{
+				else {
 					doCalculation(op, toFraction(stCalc[i + 1])); //do the calculation with the next item, which is a fraction
 					i++; //increase i as we have taken the next element as the fraction for the calculation
 				}
@@ -185,8 +188,7 @@ public class FractionCalculator implements IFractionCalculator{
 		
 		String[] split = input.split("/");
 		
-		if(split.length != 2) //not a fraction
-		{
+		if(split.length != 2) { //not a fraction
 			return isNumeric(input) ? true : false;
 		}
 		
@@ -196,13 +198,11 @@ public class FractionCalculator implements IFractionCalculator{
 	
 	private boolean isNumeric(String input)
 	{//checks whether the string input is a number by attempting to parse and checking for an error
-		try
-		{
+		try {
 			Integer.parseInt(input);
 			return true;
 		}
-		catch(Exception ex)
-		{
+		catch(Exception ex) {
 			return false;
 		}
 		
@@ -213,13 +213,11 @@ public class FractionCalculator implements IFractionCalculator{
 		
 		int[] ret = new int[2];
 		
-		if(!isFraction(input)) //not a fraction or a whole number
-		{
+		if(!isFraction(input)) { //not a fraction or a whole number
 				ret[0] = 0; ret[1] = 1; 
 				return ret;
 		}
-		else if(isNumeric(input)) //is a whole number
-		{
+		else if(isNumeric(input)) { //is a whole number
 			ret[0] = Integer.parseInt(input); ret[1] = 1; 
 			return ret;
 		}
@@ -227,14 +225,12 @@ public class FractionCalculator implements IFractionCalculator{
 		//if here then is a fraction
 		String[] split = input.split("/");
 		
-		if(isNumeric(split[0]) && isNumeric(split[1]))
-		{
+		if(isNumeric(split[0]) && isNumeric(split[1])) {
 			ret[0] = Integer.parseInt(split[0]); //int already validated
 			ret[1] = Integer.parseInt(split[1]);
 			return ret;
 		}
-		else //something invalid, return zero
-		{
+		else { //something invalid, return zero
 			ret[0] = 0; 
 			ret[1] = 1; 
 			return ret;
@@ -245,14 +241,11 @@ public class FractionCalculator implements IFractionCalculator{
 	private Fraction toFraction(String input)
 	{//takes a string and returns a fraction
 		
-		if(!isFraction(input))
-		{
+		if(!isFraction(input)) {
 			return new Fraction(0,1);
 		}
-		else
-		{
-			int[] f = returnFractionElements(input);
-						
+		else {
+			int[] f = returnFractionElements(input);					
 			return f.length == 2 ? new Fraction(f[0], f[1]) : new Fraction(0,1); //create fraction or send 0 if not a fraction
 		}
 		
@@ -296,8 +289,7 @@ class Operators
 	public boolean isOperator(String input)
 	{//whether the inputed string exists in the list
 		
-		for(int i = 0; i < list.size(); i++)
-		{
+		for(int i = 0; i < list.size(); i++) {
 			if(input.trim().equals(list.get(i).name)) {return true;} //a match
 		}
 		
@@ -308,8 +300,7 @@ class Operators
 	public Operator returnOperator(String operatorName)
 	{//returns the Operator that matches the input string name
 		
-		for(int i = 0; i < list.size(); i++)
-		{
+		for(int i = 0; i < list.size(); i++) {
 			if(operatorName.trim().equals(list.get(i).name)) {return list.get(i);} //a match
 		}
 		
@@ -333,12 +324,10 @@ class Operator
 	
 	public boolean isQuit()
 	{
-		if (this.name.equals("quit") || this.name.toUpperCase().equals("Q"))
-		{
+		if (this.name.equals("quit") || this.name.toUpperCase().equals("Q")) {
 			return true;
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}//isQuit()
